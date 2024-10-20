@@ -86,23 +86,52 @@
     description = "Theo";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-	git 
-	vscode
-	docker
+	vlc
+	htop
+	pkgs.libreoffice-qt6-still
+	pkgs.onedriver
     ];
   };
+
+ nix = {
+    package = pkgs.nix; # Make sure you use a recent nix version from pkgs
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+
+ # Define the post-build hook to run after each successful nixos-rebuild
+ # system.activationScripts.postBuildHook = {
+ #   text = ''
+ #     # Run the post-build hook script
+ #     ${pkgs.bash}/bin/bash /etc/nixos/post-build-hook.sh
+ #   '';
+ # };
+
 
   # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true;  
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    git
+    vscode
+    docker
+    pkgs.gnome.gnome-shell-extensions
+  ];
+
+  programs.nix-ld.enable = true;
+
+  programs.nix-ld.libraries = with pkgs; [
+
+    # Add any missing dynamic libraries for unpackaged programs
+
+    # here, NOT in environment.systemPackages
+
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
